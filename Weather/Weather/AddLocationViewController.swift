@@ -8,14 +8,13 @@
 
 import UIKit
 import MapKit
-import CoreData
 
 class AddLocationViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     
+    var viewModel: AddLocationViewModel?
     var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0)
-    var managedObjectContext: NSManagedObjectContext?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,9 +28,6 @@ class AddLocationViewController: UIViewController {
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotationOnLongPress(gesture:)))
         longPressGesture.minimumPressDuration = 1.0
         self.mapView.addGestureRecognizer(longPressGesture)
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        self.managedObjectContext = appDelegate.managedObjectContext
     }
     
     func addAnnotationOnLongPress(gesture: UILongPressGestureRecognizer) {
@@ -45,15 +41,7 @@ class AddLocationViewController: UIViewController {
             
             alert.addAction(UIAlertAction(title: "Yes, please", style: UIAlertActionStyle.default, handler: { action in
                 
-                let bookmark = NSEntityDescription.insertNewObject(forEntityName: "Bookmark", into: self.managedObjectContext!) as! BookmarkModel
-                bookmark.lat = coordinate.latitude
-                bookmark.lon = coordinate.longitude
-                
-                do {
-                    try self.managedObjectContext?.save()
-                } catch {
-                    fatalError("Failure to save context: \(error)")
-                }
+                self.viewModel?.saveBookmark(coordinate: coordinate)
                 
                 self.closeView()
             }))

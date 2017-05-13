@@ -9,11 +9,6 @@
 import Foundation
 import CoreLocation
 
-enum SerializationError: Error {
-    case missing(String)
-    case invalid(String, Any)
-}
-
 fileprivate let baseURL = "http://api.openweathermap.org/data/2.5/weather"
 fileprivate let apiKey = "c6e381d8c7ff98f0fee43775817cf6ad"
 
@@ -62,18 +57,21 @@ struct OpenWeatherMapService: ServiceProtocol {
             } catch {
                 completionHandler(nil, error)
             }
+            
+            
         }
         
         task.resume()
     }
     
     func parseWeatherJson (json: [String: Any]) throws -> Weather {
-        // Extract name
+        
+        // Extract and validate weather values
+        
         guard let location = json["name"] as? String else {
             throw SerializationError.missing("name")
         }
-        
-        // Extract and validate weather
+
         guard let weatherJSON = json["weather"] as? [Any] else {
             throw SerializationError.missing("weather")
         }
@@ -82,21 +80,50 @@ struct OpenWeatherMapService: ServiceProtocol {
             throw SerializationError.missing("weather")
         }
         
-        // Extract and validate temperature
         guard let icon = firstWeatherObject["icon"] as? String else {
             throw SerializationError.missing("icon")
         }
         
-        let weatherIcon = WeatherIcon(condition: 800, iconString: icon)
+        guard let iconId = firstWeatherObject["id"] as? Int else {
+            throw SerializationError.missing("iconId")
+        }
         
-        // Extract and validate temperature
-        guard let mainJSON = json["main"] as? [String: Int],
-            let temp = mainJSON["temp"]
-            else {
-                throw SerializationError.missing("temp")
+        let weatherIcon = WeatherIcon(condition: iconId, iconString: icon)
+        
+        guard let mainJSON = json["main"] as? [String: Int] else {
+                throw SerializationError.missing("main")
+        }
+        
+        guard let temp = mainJSON["temp"] else {
+            throw SerializationError.missing("temp")
+        }
+
+        guard let humidity = mainJSON["humidity"] else {
+            throw SerializationError.missing("humidity")
+        }
+        
+        guard let windJSON = json["wind"] as? [String: Int] else {
+            throw SerializationError.missing("wind")
+        }
+        
+        guard let windSpeed = windJSON["speed"] else {
+            throw SerializationError.missing("speed")
+        }
+        
+        guard let windDegree = windJSON["deg"] else {
+            throw SerializationError.missing("deg")
+        }
+
+        guard let cloudsJSON = json["clouds"] as? [String: Int] else {
+            throw SerializationError.missing("clouds")
+        }
+        
+        guard let cloudCoverage = cloudsJSON["all"] else {
+            throw SerializationError.missing("cloud all")
         }
         
         // Initialize properties
-        return Weather(location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp))
+        return Weather(location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed), windDegree: String(describing:windDegree), cloudCoverage: String(describing:cloudCoverage))
     }
+    
 }

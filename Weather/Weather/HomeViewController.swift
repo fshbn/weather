@@ -74,7 +74,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if segue.identifier == "addLocationSegue" {
             let destinationViewController = segue.destination as! AddLocationViewController
             if let userLocation = viewModel?.userLastLocation {
+                destinationViewController.viewModel = AddLocationViewModel()
                 destinationViewController.userLocation = userLocation
+            }
+        }
+        
+        if segue.identifier == "citySegue" {
+            if let indexPath = tableView.indexPathForSelectedRow {
+                let row = indexPath.row
+                let cityViewModel = CityViewModel(weather: (viewModel?.bookmarkedLocations.value[row])!)
+                let destinationViewController = segue.destination as! CityViewController
+                destinationViewController.viewModel = cityViewModel
             }
         }
     }
