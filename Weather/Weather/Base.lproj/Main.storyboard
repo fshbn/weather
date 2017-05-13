@@ -59,7 +59,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CityTableViewCell" id="MY9-Uc-RDt">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BookmarkTableViewCell" id="MY9-Uc-RDt" customClass="BookmarkTableViewCell" customModule="Weather" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MY9-Uc-RDt" id="8ld-75-GLc">
@@ -80,21 +80,33 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aE7-t8-KMy">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LV3-RY-7yd">
                                                     <rect key="frame" x="313" y="8" width="54" height="64"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
+                                                    <fontDescription key="fontDescription" name="WeatherIcons-Regular" family="Weather Icons" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="iconLabel" destination="LV3-RY-7yd" id="woT-JZ-eyf"/>
+                                            <outlet property="nameLabel" destination="UdA-86-uye" id="JY4-TG-UAT"/>
+                                            <outlet property="temperatureLabel" destination="mye-qJ-NeM" id="oU7-Vg-8wZ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="O8V-ep-gmO"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="T0Q-pR-NpE"/>
+                                </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oNr-OU-577">
                                 <rect key="frame" x="319" y="276" width="48" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
-                                    <segue destination="fzv-be-OId" kind="presentation" id="0KX-hH-7dw"/>
+                                    <segue destination="fzv-be-OId" kind="presentation" identifier="addLocationSegue" id="0KX-hH-7dw"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -103,6 +115,7 @@
                     <connections>
                         <outlet property="iconLabel" destination="nH7-Cg-OKX" id="Xx7-kf-rNd"/>
                         <outlet property="locationLabel" destination="YWA-RR-dXd" id="6rC-1K-SaI"/>
+                        <outlet property="tableView" destination="Ot4-y0-NjF" id="YN3-gH-YGb"/>
                         <outlet property="temperatureLabel" destination="WHU-qO-uom" id="MAF-fK-l6b"/>
                     </connections>
                 </viewController>
@@ -110,10 +123,10 @@
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="137.18140929535232"/>
         </scene>
-        <!--View Controller-->
+        <!--Add Location View Controller-->
         <scene sceneID="umR-OR-D4G">
             <objects>
-                <viewController id="fzv-be-OId" sceneMemberID="viewController">
+                <viewController id="fzv-be-OId" customClass="AddLocationViewController" customModule="Weather" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="PtJ-De-hvE"/>
                         <viewControllerLayoutGuide type="bottom" id="am8-68-3e1"/>
@@ -122,18 +135,37 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rvJ-FM-D1q">
-                                <rect key="frame" x="300" y="45" width="46" height="30"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" pitchEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dcK-or-d1N">
+                                <rect key="frame" x="0.0" y="166" width="375" height="501"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                            </button>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dcK-or-d1N">
-                                <rect key="frame" x="0.0" y="119" width="375" height="375"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="fzv-be-OId" id="214-7G-EsD"/>
+                                </connections>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rvJ-FM-D1q">
+                                <rect key="frame" x="16" y="20" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                <state key="normal" title="X">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="closeButtonTapped:" destination="fzv-be-OId" eventType="touchUpInside" id="f9t-mT-HZW"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Press anywhere on the map to add that place to your bookmarks." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ey-0G-g4X">
+                                <rect key="frame" x="16" y="58" width="343" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.72103316317960098" green="0.72103316317960098" blue="0.72103316317960098" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="dcK-or-d1N" id="oZ2-TK-Kh7"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9ng-4V-KEg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
