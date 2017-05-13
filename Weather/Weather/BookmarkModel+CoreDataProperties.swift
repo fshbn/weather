@@ -16,9 +16,9 @@ extension BookmarkModel {
         return NSFetchRequest<BookmarkModel>(entityName: "Bookmark")
     }
 
+    @NSManaged public var cityId: Int16
     @NSManaged public var lat: Double
     @NSManaged public var lon: Double
     @NSManaged public var name: String?
-    @NSManaged public var cityId: Int16
 
 }

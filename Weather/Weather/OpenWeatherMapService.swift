@@ -68,6 +68,10 @@ struct OpenWeatherMapService: ServiceProtocol {
         
         // Extract and validate weather values
         
+        guard let cityId = json["id"] as? Int16 else {
+            throw SerializationError.missing("id")
+        }
+        
         guard let location = json["name"] as? String else {
             throw SerializationError.missing("name")
         }
@@ -123,7 +127,7 @@ struct OpenWeatherMapService: ServiceProtocol {
         }
         
         // Initialize properties
-        return Weather(location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed), windDegree: String(describing:windDegree), cloudCoverage: String(describing:cloudCoverage))
+        return Weather(cityId: cityId, location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed), windDegree: String(describing:windDegree), cloudCoverage: String(describing:cloudCoverage))
     }
     
 }

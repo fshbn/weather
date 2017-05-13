@@ -45,7 +45,6 @@ class HomeViewModel {
         managedObjectContext = appDelegate.managedObjectContext
         bookmarks = [Weather]()
         
-        // Can put Dependency Injection here
         locationService = LocationService()
         weatherService = OpenWeatherMapService()
     }
@@ -57,7 +56,55 @@ class HomeViewModel {
     }
     
     func updateBookmarks() {
-        fetchBoorkmarks()
+        self.bookmarks = [Weather]()
+        
+        let bookmarkModels = fetchBookmarksWith(predicate: nil)
+        for bookmark in bookmarkModels {
+            let location = CLLocation(latitude: bookmark.lat, longitude: bookmark.lon)
+            
+            weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
+                if let unwrappedError = error {
+                    self.updateBookmarks(unwrappedError)
+                    return
+                }
+                
+                guard let unwrappedWeather = weather else {
+                    return
+                }
+                
+                if bookmark.name == nil && bookmark.cityId == 0 {
+                    bookmark.name = unwrappedWeather.location
+                    bookmark.cityId = unwrappedWeather.cityId
+                    
+                    do {
+                        try self.managedObjectContext.save()
+                    } catch {
+                        fatalError("Failure to save context: \(error)")
+                    }
+                }
+                
+                self.bookmarks.append(unwrappedWeather)
+                self.updateBookmarks(self.bookmarks)
+            }
+        }
+    }
+    
+    func deleteBookmarkAt(indexPath: IndexPath) {
+        let weather = self.bookmarks[indexPath.row]
+        let bookmarkModels = fetchBookmarksWith(predicate: NSPredicate(format: "cityId == %i", weather.cityId))
+        
+        for bookmark in bookmarkModels {
+            managedObjectContext.delete(bookmark)
+        }
+        
+        do {
+            try self.managedObjectContext.save()
+        } catch {
+            fatalError("Failure to save context: \(error)")
+        }
+        
+        self.bookmarks.remove(at: indexPath.row)
+        self.updateBookmarks(self.bookmarks)
     }
     
     // MARK: - private
@@ -65,9 +112,11 @@ class HomeViewModel {
         //        hasError.value = false
         //        errorMessage.value = nil
         //
-        locationName.value = weather.location
-        iconText.value = weather.iconText
-        temperature.value = weather.temperature
+        DispatchQueue.main.async(execute: {
+            self.locationName.value = weather.location
+            self.iconText.value = weather.iconText
+            self.temperature.value = weather.temperature
+        })
     }
     
     fileprivate func updateWeather(_ error: Error) {
@@ -84,9 +133,11 @@ class HomeViewModel {
         //            errorMessage.value = "We're having trouble parsing weather data."
         //        }
         //
-        locationName.value = emptyString
-        iconText.value = emptyString
-        temperature.value = emptyString
+        DispatchQueue.main.async(execute: {
+            self.locationName.value = emptyString
+            self.iconText.value = emptyString
+            self.temperature.value = emptyString
+        })
     }
     
     // MARK: - private
@@ -113,43 +164,22 @@ class HomeViewModel {
         //            errorMessage.value = "We're having trouble parsing weather data."
         //        }
         //
-        bookmarkedLocations.value = []
+        DispatchQueue.main.async(execute: {
+            self.bookmarkedLocations.value = []
+        })
     }
     
-    fileprivate func fetchBoorkmarks() {
-        self.bookmarks = [Weather]()
+    fileprivate func fetchBookmarksWith(predicate: NSPredicate?) -> [BookmarkModel] {
         let bookmarkFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Bookmark")
+        if let predicate = predicate {
+            bookmarkFetch.predicate = predicate
+        }
         
         do {
             let fetchedBookmarks = try self.managedObjectContext.fetch(bookmarkFetch) as! [BookmarkModel]
-            for bookmark in fetchedBookmarks {
-                let location = CLLocation(latitude: bookmark.lat, longitude: bookmark.lon)
-                
-                weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
-                    if let unwrappedError = error {
-                        self.updateBookmarks(unwrappedError)
-                        return
-                    }
-                    
-                    guard let unwrappedWeather = weather else {
-                        return
-                    }
-                    
-                    bookmark.name = unwrappedWeather.location
-                    do {
-                        try self.managedObjectContext.save()
-                    } catch {
-                        fatalError("Failure to save context: \(error)")
-                    }
-                    
-                    self.bookmarks.append(unwrappedWeather)
-                    
-                    self.updateBookmarks(self.bookmarks)
-                }
-            }
-            print(fetchedBookmarks)
+            return fetchedBookmarks
         } catch {
-            fatalError("Failed to fetch employees: \(error)")
+            fatalError("Failed to fetch bookmarks: \(error)")
         }
     }
 }
@@ -159,19 +189,17 @@ extension HomeViewModel: LocationServiceDelegate {
     func locationDidUpdate(_ service: LocationService, location: CLLocation) {
         userLastLocation = location
         weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
-            DispatchQueue.main.async(execute: {
-                if let unwrappedError = error {
-                    print(unwrappedError)
-                    self.updateWeather(unwrappedError)
-                    return
-                }
-                
-                guard let unwrappedWeather = weather else {
-                    return
-                }
-                
-                self.updateWeather(unwrappedWeather)
-            })
+            if let unwrappedError = error {
+                print(unwrappedError)
+                self.updateWeather(unwrappedError)
+                return
+            }
+            
+            guard let unwrappedWeather = weather else {
+                return
+            }
+            
+            self.updateWeather(unwrappedWeather)
         }
     }
 }
