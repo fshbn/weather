@@ -12,8 +12,6 @@ import CoreData
 import UIKit
 
 class HomeViewModel {
-    // MARK: - Constants
-    fileprivate let emptyString = ""
     
     // MARK: - Properties
     let hasError: Observable<Bool>

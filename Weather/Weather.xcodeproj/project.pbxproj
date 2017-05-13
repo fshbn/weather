@@ -12,10 +12,13 @@
 		54BB66521EC6EA33001CD99B /* WeatherIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66511EC6EA33001CD99B /* WeatherIcon.swift */; };
 		54BB66571EC6F301001CD99B /* AddLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66561EC6F301001CD99B /* AddLocationViewController.swift */; };
 		54BB665A1EC6F450001CD99B /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54BB66591EC6F450001CD99B /* MapKit.framework */; };
-		54BB665C1EC6FF81001CD99B /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB665B1EC6FF81001CD99B /* BaseViewController.swift */; };
-		54BB66671EC70C37001CD99B /* BookmarkModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66651EC70C37001CD99B /* BookmarkModel+CoreDataClass.swift */; };
-		54BB66681EC70C37001CD99B /* BookmarkModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66661EC70C37001CD99B /* BookmarkModel+CoreDataProperties.swift */; };
 		54BB666A1EC718D8001CD99B /* BookmarkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66691EC718D8001CD99B /* BookmarkTableViewCell.swift */; };
+		54BB666C1EC7286E001CD99B /* CityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB666B1EC7286E001CD99B /* CityViewModel.swift */; };
+		54BB666E1EC7288B001CD99B /* CityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB666D1EC7288B001CD99B /* CityViewController.swift */; };
+		54BB66711EC735C3001CD99B /* BookmarkModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB666F1EC735C3001CD99B /* BookmarkModel+CoreDataClass.swift */; };
+		54BB66721EC735C3001CD99B /* BookmarkModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66701EC735C3001CD99B /* BookmarkModel+CoreDataProperties.swift */; };
+		54BB66751EC74700001CD99B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66741EC74700001CD99B /* Constants.swift */; };
+		54BB66771EC75453001CD99B /* AddLocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB66761EC75453001CD99B /* AddLocationViewModel.swift */; };
 		54C39FE11EC629FC0060EEA1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C39FE01EC629FC0060EEA1 /* AppDelegate.swift */; };
 		54C39FE61EC629FC0060EEA1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54C39FE41EC629FC0060EEA1 /* Main.storyboard */; };
 		54C39FE91EC629FC0060EEA1 /* Weather.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 54C39FE71EC629FC0060EEA1 /* Weather.xcdatamodeld */; };
@@ -47,10 +50,13 @@
 		54BB66511EC6EA33001CD99B /* WeatherIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherIcon.swift; sourceTree = "<group>"; };
 		54BB66561EC6F301001CD99B /* AddLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddLocationViewController.swift; sourceTree = "<group>"; };
 		54BB66591EC6F450001CD99B /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		54BB665B1EC6FF81001CD99B /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
-		54BB66651EC70C37001CD99B /* BookmarkModel+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BookmarkModel+CoreDataClass.swift"; sourceTree = "<group>"; };
-		54BB66661EC70C37001CD99B /* BookmarkModel+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BookmarkModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		54BB66691EC718D8001CD99B /* BookmarkTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkTableViewCell.swift; sourceTree = "<group>"; };
+		54BB666B1EC7286E001CD99B /* CityViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CityViewModel.swift; sourceTree = "<group>"; };
+		54BB666D1EC7288B001CD99B /* CityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CityViewController.swift; sourceTree = "<group>"; };
+		54BB666F1EC735C3001CD99B /* BookmarkModel+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BookmarkModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		54BB66701EC735C3001CD99B /* BookmarkModel+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BookmarkModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		54BB66741EC74700001CD99B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		54BB66761EC75453001CD99B /* AddLocationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddLocationViewModel.swift; sourceTree = "<group>"; };
 		54C39FDD1EC629FC0060EEA1 /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54C39FE01EC629FC0060EEA1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54C39FE51EC629FC0060EEA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -100,6 +106,7 @@
 		54BB66551EC6F2B5001CD99B /* AddLocation */ = {
 			isa = PBXGroup;
 			children = (
+				54BB66761EC75453001CD99B /* AddLocationViewModel.swift */,
 				54BB66561EC6F301001CD99B /* AddLocationViewController.swift */,
 			);
 			name = AddLocation;
@@ -111,6 +118,15 @@
 				54BB66591EC6F450001CD99B /* MapKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		54BB66731EC735CA001CD99B /* CoreDataModels */ = {
+			isa = PBXGroup;
+			children = (
+				54BB666F1EC735C3001CD99B /* BookmarkModel+CoreDataClass.swift */,
+				54BB66701EC735C3001CD99B /* BookmarkModel+CoreDataProperties.swift */,
+			);
+			name = CoreDataModels;
 			sourceTree = "<group>";
 		};
 		54C39FD41EC629FC0060EEA1 = {
@@ -174,7 +190,7 @@
 			children = (
 				54BB664C1EC64AD1001CD99B /* Observable.swift */,
 				54BB664E1EC64B09001CD99B /* LocationService.swift */,
-				54BB665B1EC6FF81001CD99B /* BaseViewController.swift */,
+				54BB66741EC74700001CD99B /* Constants.swift */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -192,6 +208,8 @@
 		54C3A0061EC62C610060EEA1 /* City */ = {
 			isa = PBXGroup;
 			children = (
+				54BB666B1EC7286E001CD99B /* CityViewModel.swift */,
+				54BB666D1EC7288B001CD99B /* CityViewController.swift */,
 			);
 			name = City;
 			sourceTree = "<group>";
@@ -215,8 +233,7 @@
 		54C3A0091EC62CC10060EEA1 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				54BB66651EC70C37001CD99B /* BookmarkModel+CoreDataClass.swift */,
-				54BB66661EC70C37001CD99B /* BookmarkModel+CoreDataProperties.swift */,
+				54BB66731EC735CA001CD99B /* CoreDataModels */,
 				54C39FE71EC629FC0060EEA1 /* Weather.xcdatamodeld */,
 			);
 			name = CoreData;
@@ -355,22 +372,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54BB66681EC70C37001CD99B /* BookmarkModel+CoreDataProperties.swift in Sources */,
-				54BB665C1EC6FF81001CD99B /* BaseViewController.swift in Sources */,
+				54BB666C1EC7286E001CD99B /* CityViewModel.swift in Sources */,
 				54C39FE91EC629FC0060EEA1 /* Weather.xcdatamodeld in Sources */,
 				54C3A0241EC635040060EEA1 /* OpenWeatherMapService.swift in Sources */,
+				54BB666E1EC7288B001CD99B /* CityViewController.swift in Sources */,
 				54BB664F1EC64B09001CD99B /* LocationService.swift in Sources */,
 				54C3A0261EC643360060EEA1 /* HomeViewModel.swift in Sources */,
-				54BB66671EC70C37001CD99B /* BookmarkModel+CoreDataClass.swift in Sources */,
+				54BB66711EC735C3001CD99B /* BookmarkModel+CoreDataClass.swift in Sources */,
 				54BB66571EC6F301001CD99B /* AddLocationViewController.swift in Sources */,
+				54BB66721EC735C3001CD99B /* BookmarkModel+CoreDataProperties.swift in Sources */,
 				54C39FE11EC629FC0060EEA1 /* AppDelegate.swift in Sources */,
 				54BB664D1EC64AD1001CD99B /* Observable.swift in Sources */,
 				54C3A0281EC643450060EEA1 /* HomeViewController.swift in Sources */,
+				54BB66771EC75453001CD99B /* AddLocationViewModel.swift in Sources */,
 				54BB66521EC6EA33001CD99B /* WeatherIcon.swift in Sources */,
 				54C3A01D1EC633E60060EEA1 /* ServiceProtocol.swift in Sources */,
 				54C3A0221EC634720060EEA1 /* Forecast.swift in Sources */,
 				54C3A0201EC634470060EEA1 /* Weather.swift in Sources */,
 				54BB666A1EC718D8001CD99B /* BookmarkTableViewCell.swift in Sources */,
+				54BB66751EC74700001CD99B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
