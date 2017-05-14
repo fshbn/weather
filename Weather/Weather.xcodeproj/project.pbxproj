@@ -160,7 +160,6 @@
 				54C39FE01EC629FC0060EEA1 /* AppDelegate.swift */,
 				54C3A0031EC62A4A0060EEA1 /* Features */,
 				54C3A0081EC62CA00060EEA1 /* Storyboards */,
-				54C3A01E1EC634390060EEA1 /* Models */,
 				54C3A01A1EC6339E0060EEA1 /* Services */,
 				54C3A0091EC62CC10060EEA1 /* CoreData */,
 				54C3A0041EC62A530060EEA1 /* Shared */,
@@ -203,6 +202,8 @@
 		54C3A0051EC62C480060EEA1 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				54C3A01F1EC634470060EEA1 /* Weather.swift */,
+				54BB66511EC6EA33001CD99B /* WeatherIcon.swift */,
 				54C3A0251EC643360060EEA1 /* HomeViewModel.swift */,
 				54C3A0271EC643450060EEA1 /* HomeViewController.swift */,
 				54BB66691EC718D8001CD99B /* BookmarkTableViewCell.swift */,
@@ -213,6 +214,7 @@
 		54C3A0061EC62C610060EEA1 /* City */ = {
 			isa = PBXGroup;
 			children = (
+				54C3A0211EC634720060EEA1 /* Forecast.swift */,
 				54BB666B1EC7286E001CD99B /* CityViewModel.swift */,
 				54BB666D1EC7288B001CD99B /* CityViewController.swift */,
 			);
@@ -261,16 +263,6 @@
 				54BB66501EC6C803001CD99B /* OpenWeatherMapService */,
 			);
 			name = Services;
-			sourceTree = "<group>";
-		};
-		54C3A01E1EC634390060EEA1 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				54C3A01F1EC634470060EEA1 /* Weather.swift */,
-				54C3A0211EC634720060EEA1 /* Forecast.swift */,
-				54BB66511EC6EA33001CD99B /* WeatherIcon.swift */,
-			);
-			name = Models;
 			sourceTree = "<group>";
 		};
 		54DABD491EC86FCC007BEBC8 /* Supporting Files */ = {

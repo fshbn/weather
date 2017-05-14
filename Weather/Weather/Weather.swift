@@ -15,10 +15,11 @@ struct Weather {
     var weatherCondition: String = ""
     var humidity: Double = 0
     var precipitationProbability: Double = 0
-    var pressure: Double = 0
     var windSpeed: Double = 0
     var windDeg: Double = 0
     var icon: String = ""
+    var lat: Double = 0
+    var lon: Double = 0
 }
 
 extension Weather {
@@ -30,7 +31,6 @@ extension Weather {
         static let mainKey = "main"
         static let temperature = "temp"
         static let humidity = "humidity"
-        static let pressure = "pressure"
         
         // rain
         static let rainKey = "rain"
@@ -64,10 +64,6 @@ extension Weather {
             
             if let humidityValue = main[Key.humidity] as? Double {
                 self.humidity = humidityValue
-            }
-            
-            if let pressureValue = main[Key.pressure] as? Double {
-                self.pressure = pressureValue
             }
         }
         

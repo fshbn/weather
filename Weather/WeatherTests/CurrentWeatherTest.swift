@@ -27,7 +27,7 @@ class CurrentWeatherTest: XCTestCase {
     func testAPIwithValidLocation() {
         let location = CLLocation(latitude: 40.9911260, longitude: 29.1070620)
         
-        weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
+        weatherService.getWeatherInfo(location) { weather, error -> Void in
             XCTAssertEqual(weather?.cityId, 821)
         }
     }
@@ -35,7 +35,7 @@ class CurrentWeatherTest: XCTestCase {
     func testAPIwithInvalidLocation() {
         let location = CLLocation(latitude: 12345, longitude: 29.1070620)
 
-        weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
+        weatherService.getWeatherInfo(location) { weather, error -> Void in
             XCTAssertEqual(weather?.cityId, 0)
         }
     }

@@ -65,7 +65,7 @@ class HomeViewModel {
                     return
                 }
                 
-                guard let unwrappedWeather = weather else {
+                guard var unwrappedWeather = weather else {
                     return
                 }
                 
@@ -79,6 +79,10 @@ class HomeViewModel {
                         fatalError("Failure to save context: \(error)")
                     }
                 }
+                
+                //to get forecast from city view
+                unwrappedWeather.lat = bookmarkModel.lat
+                unwrappedWeather.lon = bookmarkModel.lon
                 
                 self.bookmarks.append(unwrappedWeather)
                 DispatchQueue.main.async(execute: {

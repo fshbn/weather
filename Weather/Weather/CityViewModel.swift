@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class CityViewModel {
 
@@ -17,6 +18,10 @@ class CityViewModel {
     let precipitationProbability: Observable<String>
     let humidity: Observable<String>
     let windSpeed: Observable<String>
+    let forecasts: Observable<[Forecast]>
+    
+    var lat: Double = 0
+    var lon: Double = 0
     
     // MARK: - Services
     fileprivate var weatherService: ServiceProtocol
@@ -29,11 +34,40 @@ class CityViewModel {
         precipitationProbability = Observable(String(format: "%.0f", weather.precipitationProbability))
         humidity = Observable(String(format: "%.0f", weather.humidity))
         windSpeed = Observable(String(format: "%.0f", weather.windSpeed))
+        forecasts = Observable([])
+        
+        lat = weather.lat
+        lon = weather.lon
         
         weatherService = OpenWeatherMapService()
+        self.get5DayForecast()
     }
     
-    fileprivate func fetch5DayForecast() {
-
+    fileprivate func get5DayForecast() {
+        let location = CLLocation(latitude: lat, longitude: lon)
+        
+        weatherService.get5DayWeatherForecast(location) { forecastList, error -> Void in
+            if let unwrappedError = error {
+                self.updateForecasts(unwrappedError)
+                return
+            }
+            
+            guard let unwrappedForecasts = forecastList else {
+                return
+            }
+            
+            DispatchQueue.main.async(execute: {
+                self.updateForecasts(unwrappedForecasts)
+            })
+        }
+    }
+    
+    // MARK: - private
+    fileprivate func updateForecasts(_ forecasts: [Forecast]) {
+        self.forecasts.value = forecasts
+    }
+    
+    fileprivate func updateForecasts(_ error: WeatherError) {
+        self.forecasts.value = []
     }
 }
