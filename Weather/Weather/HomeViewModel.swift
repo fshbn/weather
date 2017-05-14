@@ -59,7 +59,7 @@ class HomeViewModel {
         for bookmarkModel in bookmarkModels {
             let location = CLLocation(latitude: bookmarkModel.lat, longitude: bookmarkModel.lon)
             
-            weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
+            weatherService.getWeatherInfo(location) { weather, error -> Void in
                 if let unwrappedError = error {
                     self.updateBookmarks(unwrappedError)
                     return
@@ -152,7 +152,7 @@ class HomeViewModel {
 extension HomeViewModel: LocationServiceDelegate {
     func locationDidUpdate(_ service: LocationService, location: CLLocation) {
         userLastLocation = location
-        weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
+        weatherService.getWeatherInfo(location) { weather, error -> Void in
             DispatchQueue.main.async(execute: {
                 if let unwrappedError = error {
                     self.updateWeather(unwrappedError)

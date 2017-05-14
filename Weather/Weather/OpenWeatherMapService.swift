@@ -15,7 +15,7 @@ fileprivate let unit = "metric"
 
 struct OpenWeatherMapService: ServiceProtocol {
     
-    fileprivate func generateRequestURL(_ location: CLLocation) -> URL? {
+    fileprivate func generateRequestWeatherURL(_ location: CLLocation) -> URL? {
         guard var components = URLComponents(string:baseURL) else {
             return nil
         }
@@ -33,8 +33,42 @@ struct OpenWeatherMapService: ServiceProtocol {
         return components.url
     }
     
-    func retrieveWeatherInfo(_ location: CLLocation, completionHandler: @escaping CompletionHandler) {
-        guard let url = generateRequestURL(location) else {
+    func getWeatherInfo(_ location: CLLocation, completionHandler: @escaping CompletionHandler) {
+        guard let url = generateRequestWeatherURL(location) else {
+            completionHandler(nil, WeatherError.requestError)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard error == nil else {
+                completionHandler(nil, WeatherError.networkError)
+                return
+            }
+            
+            guard let data = data else {
+                completionHandler(nil, WeatherError.dataError)
+                return
+            }
+            
+            do {
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] {
+                    if json["id"] != nil {
+                        let weather = Weather(json: json)
+                        completionHandler(weather, nil)
+                    } else {
+                        completionHandler(nil, WeatherError.dataError)
+                    }
+                } else {
+                    completionHandler(nil, WeatherError.JSONParseError)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func get5DayWeatherForecast(_ location: CLLocation, completionHandler: @escaping CompletionHandler) {
+        guard let url = generateRequestWeatherURL(location) else {
             completionHandler(nil, WeatherError.requestError)
             return
         }
