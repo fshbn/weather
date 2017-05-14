@@ -37,7 +37,7 @@ class CityViewController: UIViewController {
         
         viewModel?.temperature.observe {
             [unowned self] in
-            self.temperatureLabel.text = $0
+            self.temperatureLabel.text = $0 + "°"
         }
         
         viewModel?.windSpeed.observe {

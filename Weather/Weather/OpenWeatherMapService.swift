@@ -9,8 +9,9 @@
 import Foundation
 import CoreLocation
 
-fileprivate let baseURL = "http://api.openweathermap.org/data/2.5/weather"
+fileprivate let baseURL = "http://api.openweathermap.org"
 fileprivate let apiKey = "c6e381d8c7ff98f0fee43775817cf6ad"
+fileprivate let unit = "metric"
 
 struct OpenWeatherMapService: ServiceProtocol {
     
@@ -22,10 +23,28 @@ struct OpenWeatherMapService: ServiceProtocol {
         let latitude = String(location.coordinate.latitude)
         let longitude = String(location.coordinate.longitude)
         
+        components.path = "/data/2.5/weather"
+        
         components.queryItems = [URLQueryItem(name:"lat", value:latitude),
                                  URLQueryItem(name:"lon", value:longitude),
                                  URLQueryItem(name:"appid", value:apiKey),
-                                 URLQueryItem(name:"units", value:"metric")]
+                                 URLQueryItem(name:"units", value:unit)]
+    
+        return components.url
+    }
+    
+    fileprivate func generateRequestURL(_ cities: [String]) -> URL? {
+        guard var components = URLComponents(string:baseURL) else {
+            return nil
+        }
+
+        components.path = "/data/2.5/group"
+        
+        let cityString = cities.joined(separator: ",")
+        
+        components.queryItems = [URLQueryItem(name:"id", value: cityString),
+                                 URLQueryItem(name:"appid", value:apiKey),
+                                 URLQueryItem(name:"units", value:unit)]
         
         return components.url
     }
@@ -57,17 +76,45 @@ struct OpenWeatherMapService: ServiceProtocol {
             } catch {
                 completionHandler(nil, error)
             }
-            
-            
         }
         
         task.resume()
     }
     
-    func parseWeatherJson (json: [String: Any]) throws -> Weather {
+    func retrieveWeatherInfo(_ cities: [String], completionHandler: @escaping CompletionHandler) {
+        guard let url = generateRequestURL(cities) else {
+            completionHandler(nil, nil)
+            return
+        }
         
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard error == nil else {
+                if let error = error {
+                    completionHandler(nil, error)
+                } else {
+                    completionHandler(nil, error)
+                }
+                return
+            }
+            guard let data = data else {
+                completionHandler(nil, error)
+                return
+            }
+            
+            do {
+                let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any]
+                let weather = try self.parseWeatherJson(json: json!)
+                completionHandler(weather, nil)
+            } catch {
+                completionHandler(nil, error)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    fileprivate func parseWeatherJson (json: [String: Any]) throws -> Weather {
         // Extract and validate weather values
-        
         guard let cityId = json["id"] as? Int16 else {
             throw SerializationError.missing("id")
         }
@@ -113,10 +160,6 @@ struct OpenWeatherMapService: ServiceProtocol {
         guard let windSpeed = windJSON["speed"] else {
             throw SerializationError.missing("speed")
         }
-        
-        guard let windDegree = windJSON["deg"] else {
-            throw SerializationError.missing("deg")
-        }
 
         guard let cloudsJSON = json["clouds"] as? [String: Int] else {
             throw SerializationError.missing("clouds")
@@ -127,7 +170,7 @@ struct OpenWeatherMapService: ServiceProtocol {
         }
         
         // Initialize properties
-        return Weather(cityId: cityId, location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed), windDegree: String(describing:windDegree), cloudCoverage: String(describing:cloudCoverage))
+        return Weather(cityId: cityId, location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed), cloudCoverage: String(describing:cloudCoverage))
     }
     
 }

@@ -14,9 +14,6 @@ import UIKit
 class HomeViewModel {
     
     // MARK: - Properties
-    let hasError: Observable<Bool>
-    let errorMessage: Observable<String?>
-    
     let locationName: Observable<String>
     let iconText: Observable<String>
     let temperature: Observable<String>
@@ -32,9 +29,6 @@ class HomeViewModel {
     
     // MARK: - init
     init() {
-        hasError = Observable(false)
-        errorMessage = Observable(nil)
-        
         locationName = Observable(emptyString)
         iconText = Observable(emptyString)
         temperature = Observable(emptyString)
@@ -84,13 +78,14 @@ class HomeViewModel {
                 }
                 
                 self.bookmarks.append(unwrappedWeather)
-                self.updateBookmarks(self.bookmarks)
+                DispatchQueue.main.async(execute: {
+                    self.updateBookmarks(self.bookmarks)
+                })
             }
         }
     }
     
-    func deleteBookmarkAt(indexPath: IndexPath) {
-        let weather = self.bookmarks[indexPath.row]
+    func deleteBookmarkAt(weather: Weather) {
         let bookmarkModels = fetchBookmarksWith(predicate: NSPredicate(format: "cityId == %i", weather.cityId))
         
         for bookmark in bookmarkModels {
@@ -102,71 +97,33 @@ class HomeViewModel {
         } catch {
             fatalError("Failure to save context: \(error)")
         }
-        
-        self.bookmarks.remove(at: indexPath.row)
-        self.updateBookmarks(self.bookmarks)
+
+        self.bookmarks = self.bookmarks.filter{$0.cityId != weather.cityId}
+        DispatchQueue.main.async(execute: {
+            self.updateBookmarks(self.bookmarks)
+        })
     }
     
     // MARK: - private
     fileprivate func updateWeather(_ weather: Weather) {
-        //        hasError.value = false
-        //        errorMessage.value = nil
-        //
-        DispatchQueue.main.async(execute: {
-            self.locationName.value = weather.location
-            self.iconText.value = weather.iconText
-            self.temperature.value = weather.temperature
-        })
+        self.locationName.value = weather.location
+        self.iconText.value = weather.iconText
+        self.temperature.value = weather.temperature + "°"
     }
     
     fileprivate func updateWeather(_ error: Error) {
-        //        hasError.value = true
-        //
-        //        switch error.errorCode {
-        //        case .urlError:
-        //            errorMessage.value = "The weather service is not working."
-        //        case .networkRequestFailed:
-        //            errorMessage.value = "The network appears to be down."
-        //        case .jsonSerializationFailed:
-        //            errorMessage.value = "We're having trouble processing weather data."
-        //        case .jsonParsingFailed:
-        //            errorMessage.value = "We're having trouble parsing weather data."
-        //        }
-        //
-        DispatchQueue.main.async(execute: {
-            self.locationName.value = emptyString
-            self.iconText.value = emptyString
-            self.temperature.value = emptyString
-        })
+        self.locationName.value = emptyString
+        self.iconText.value = emptyString
+        self.temperature.value = emptyString
     }
     
     // MARK: - private
     fileprivate func updateBookmarks(_ weathers: [Weather]) {
-        //        hasError.value = false
-        //        errorMessage.value = nil
-        //
-        DispatchQueue.main.async(execute: {
-            self.bookmarkedLocations.value = weathers
-        })
+        self.bookmarkedLocations.value = weathers
     }
     
     fileprivate func updateBookmarks(_ error: Error) {
-        //        hasError.value = true
-        //
-        //        switch error.errorCode {
-        //        case .urlError:
-        //            errorMessage.value = "The weather service is not working."
-        //        case .networkRequestFailed:
-        //            errorMessage.value = "The network appears to be down."
-        //        case .jsonSerializationFailed:
-        //            errorMessage.value = "We're having trouble processing weather data."
-        //        case .jsonParsingFailed:
-        //            errorMessage.value = "We're having trouble parsing weather data."
-        //        }
-        //
-        DispatchQueue.main.async(execute: {
-            self.bookmarkedLocations.value = []
-        })
+        self.bookmarkedLocations.value = []
     }
     
     fileprivate func fetchBookmarksWith(predicate: NSPredicate?) -> [BookmarkModel] {
@@ -189,17 +146,18 @@ extension HomeViewModel: LocationServiceDelegate {
     func locationDidUpdate(_ service: LocationService, location: CLLocation) {
         userLastLocation = location
         weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
-            if let unwrappedError = error {
-                print(unwrappedError)
-                self.updateWeather(unwrappedError)
-                return
-            }
-            
-            guard let unwrappedWeather = weather else {
-                return
-            }
-            
-            self.updateWeather(unwrappedWeather)
+            DispatchQueue.main.async(execute: {
+                if let unwrappedError = error {
+                    self.updateWeather(unwrappedError)
+                    return
+                }
+                
+                guard let unwrappedWeather = weather else {
+                    return
+                }
+                
+                self.updateWeather(unwrappedWeather)
+            })
         }
     }
 }

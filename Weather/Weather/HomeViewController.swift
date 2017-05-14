@@ -64,7 +64,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let weather = viewModel?.bookmarkedLocations.value[indexPath.row]
         
         cell.nameLabel.text = weather?.location
-        cell.temperatureLabel.text = weather?.temperature
+        cell.temperatureLabel.text = (weather?.temperature)! + "°"
         cell.iconLabel.text = weather?.iconText
         
         return cell
@@ -76,8 +76,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
-            viewModel?.deleteBookmarkAt(indexPath: indexPath)
-            tableView.reloadData()
+            if let weather = viewModel?.bookmarkedLocations.value[indexPath.row] {
+                viewModel?.deleteBookmarkAt(weather: weather)
+            }
         }
     }
     

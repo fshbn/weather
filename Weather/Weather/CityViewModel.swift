@@ -11,9 +11,6 @@ import Foundation
 class CityViewModel {
 
     // MARK: - Properties
-    let hasError: Observable<Bool>
-    let errorMessage: Observable<String?>
-    
     let locationName: Observable<String>
     let iconText: Observable<String>
     let temperature: Observable<String>
@@ -26,9 +23,6 @@ class CityViewModel {
     
     // MARK: - init
     init(weather: Weather) {
-        hasError = Observable(false)
-        errorMessage = Observable(nil)
-        
         locationName = Observable(weather.location)
         iconText = Observable(weather.iconText)
         temperature = Observable(weather.temperature)
@@ -41,9 +35,6 @@ class CityViewModel {
     
     // MARK: - private
     fileprivate func updateWeather(_ weather: Weather) {
-        //        hasError.value = false
-        //        errorMessage.value = nil
-        //
         locationName.value = weather.location
         iconText.value = weather.iconText
         temperature.value = weather.temperature
@@ -53,19 +44,6 @@ class CityViewModel {
     }
     
     fileprivate func updateWeather(_ error: Error) {
-        //        hasError.value = true
-        //
-        //        switch error.errorCode {
-        //        case .urlError:
-        //            errorMessage.value = "The weather service is not working."
-        //        case .networkRequestFailed:
-        //            errorMessage.value = "The network appears to be down."
-        //        case .jsonSerializationFailed:
-        //            errorMessage.value = "We're having trouble processing weather data."
-        //        case .jsonParsingFailed:
-        //            errorMessage.value = "We're having trouble parsing weather data."
-        //        }
-        //
         locationName.value = emptyString
         iconText.value = emptyString
         temperature.value = emptyString
