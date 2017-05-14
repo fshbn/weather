@@ -67,7 +67,7 @@ class HomeViewModel {
                 }
                 
                 if bookmark.name == nil && bookmark.cityId == 0 {
-                    bookmark.name = unwrappedWeather.location
+                    bookmark.name = unwrappedWeather.cityName
                     bookmark.cityId = unwrappedWeather.cityId
                     
                     do {
@@ -85,7 +85,7 @@ class HomeViewModel {
         }
     }
     
-    func deleteBookmarkAt(weather: Weather) {
+    func deleteBookmarked(weather: Weather) {
         let bookmarkModels = fetchBookmarksWith(predicate: NSPredicate(format: "cityId == %i", weather.cityId))
         
         for bookmark in bookmarkModels {
@@ -106,9 +106,9 @@ class HomeViewModel {
     
     // MARK: - private
     fileprivate func updateWeather(_ weather: Weather) {
-        self.locationName.value = weather.location
-        self.iconText.value = weather.iconText
-        self.temperature.value = weather.temperature + "°"
+        self.locationName.value = weather.cityName
+        self.iconText.value = weather.icon
+        self.temperature.value = String(format: "%.0f", weather.temperature) + "°"
     }
     
     fileprivate func updateWeather(_ error: Error) {
@@ -145,7 +145,6 @@ class HomeViewModel {
 extension HomeViewModel: LocationServiceDelegate {
     func locationDidUpdate(_ service: LocationService, location: CLLocation) {
         userLastLocation = location
-        service.stopLocationUpdates()
         weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
             DispatchQueue.main.async(execute: {
                 if let unwrappedError = error {

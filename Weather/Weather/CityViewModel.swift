@@ -11,11 +11,11 @@ import Foundation
 class CityViewModel {
 
     // MARK: - Properties
-    let locationName: Observable<String>
-    let iconText: Observable<String>
+    let cityName: Observable<String>
+    let icon: Observable<String>
     let temperature: Observable<String>
+    let precipitationProbability: Observable<String>
     let humidity: Observable<String>
-    let rain3h: Observable<String>
     let windSpeed: Observable<String>
     
     // MARK: - Services
@@ -23,32 +23,14 @@ class CityViewModel {
     
     // MARK: - init
     init(weather: Weather) {
-        locationName = Observable(weather.location)
-        iconText = Observable(weather.iconText)
-        temperature = Observable(weather.temperature)
-        rain3h = Observable(weather.rain3h)
-        humidity = Observable(weather.humidity)
-        windSpeed = Observable(weather.windSpeed)
+        cityName = Observable(weather.cityName)
+        icon = Observable(weather.icon)
+        temperature = Observable(String(format: "%.0f", weather.temperature) + "°")
+        precipitationProbability = Observable(String(format: "%.0f", weather.precipitationProbability))
+        humidity = Observable(String(format: "%.0f", weather.humidity))
+        windSpeed = Observable(String(format: "%.0f", weather.windSpeed))
         
         weatherService = OpenWeatherMapService()
-    }
-    
-    // MARK: - private
-    fileprivate func updateWeather(_ weather: Weather) {
-        locationName.value = weather.location
-        iconText.value = weather.iconText
-        temperature.value = weather.temperature
-        rain3h.value = weather.rain3h
-        humidity.value = weather.humidity
-        windSpeed.value = weather.windSpeed
-    }
-    
-    fileprivate func updateWeather(_ error: Error) {
-        locationName.value = emptyString
-        iconText.value = emptyString
-        temperature.value = emptyString
-        humidity.value = emptyString
-        windSpeed.value = emptyString
     }
     
     fileprivate func fetch5DayForecast() {

@@ -29,10 +29,6 @@ class LocationService: NSObject {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
     }
-    
-    func stopLocationUpdates() {
-        locationManager.stopUpdatingLocation()
-    }
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -44,6 +40,6 @@ extension LocationService : CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//        print("Error finding location: \(error.localizedDescription)")
+        print("Error finding location: \(error.localizedDescription)")
     }
 }

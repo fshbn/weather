@@ -267,7 +267,5 @@ struct WeatherIcon {
             return
         }
         iconText = iconType.description
-        
-        print(iconText)
     }
 }

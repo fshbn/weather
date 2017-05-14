@@ -25,22 +25,22 @@ class CityViewController: UIViewController {
     }
     
     fileprivate func observeViewController() {
-        viewModel?.locationName.observe {
+        viewModel?.cityName.observe {
             [unowned self] in
             self.locationLabel.text = $0
         }
         
-        viewModel?.iconText.observe {
+        viewModel?.icon.observe {
             [unowned self] in
             self.iconLabel.text = $0
         }
         
         viewModel?.temperature.observe {
             [unowned self] in
-            self.temperatureLabel.text = $0 + "°"
+            self.temperatureLabel.text = $0
         }
         
-        viewModel?.rain3h.observe {
+        viewModel?.precipitationProbability.observe {
             [unowned self] in
             self.rain3hLabel.text = $0
         }

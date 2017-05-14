@@ -54,72 +54,16 @@ struct OpenWeatherMapService: ServiceProtocol {
             }
             
             do {
-                let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any]
-                let weather = try self.parseWeatherJson(json: json!)
-                completionHandler(weather, nil)
-            } catch {
-                completionHandler(nil, error)
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] {
+                    let weather = Weather(json: json)
+                    completionHandler(weather, nil)
+                } else {
+                    completionHandler(nil, error)
+                }
             }
         }
         
         task.resume()
-    }
-    
-    fileprivate func parseWeatherJson (json: [String: Any]) throws -> Weather {
-        var weather = Weather()
-        // Extract and validate weather values
-        if let cityId = json["id"] as? Int16 {
-            weather.cityId = cityId
-        } else {
-            throw SerializationError.missing("id")
-        }
-        
-        if let location = json["name"] as? String {
-            weather.location = location
-        } else {
-            throw SerializationError.missing("name")
-        }
-
-        if let weatherJSON = json["weather"] as? [Any] {
-            guard let firstWeatherObject = weatherJSON.first as? [String: Any] else {
-                throw SerializationError.missing("weather")
-            }
-            
-            if let icon = firstWeatherObject["icon"] as? String, let iconId = firstWeatherObject["id"] as? Int {
-                weather.iconText = WeatherIcon(condition: iconId, iconString: icon).iconText
-            } else {
-                throw SerializationError.missing("icon")
-            }
-        } else {
-            throw SerializationError.missing("weather")
-        }
-        
-        if let mainJSON = json["main"] as? [String: Int] {
-            if let temperature = mainJSON["temp"] {
-                weather.temperature = String(describing: temperature)
-            } else {
-                throw SerializationError.missing("temp")
-            }
-            
-            if let humidity = mainJSON["humidity"] {
-                weather.humidity = String(describing: humidity)
-            }
-        }
-        
-        if let rainJSON = json["rain"] as? [String: Any] {
-            if let rain3h = rainJSON["3h"] as? Int {
-                weather.rain3h = String(describing: rain3h)
-            }
-        }
-        
-        if let windJSON = json["wind"] as? [String: Int] {
-            if let windSpeed = windJSON["speed"] {
-                weather.windSpeed = String(describing: windSpeed)
-            }
-        }
-        
-        // Initialize properties
-        return weather
     }
     
 }

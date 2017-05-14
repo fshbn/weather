@@ -63,9 +63,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let weather = viewModel?.bookmarkedLocations.value[indexPath.row]
         
-        cell.nameLabel.text = weather?.location
-        cell.temperatureLabel.text = (weather?.temperature)! + "°"
-        cell.iconLabel.text = weather?.iconText
+        cell.nameLabel.text = weather?.cityName
+        if let temp = weather?.temperature {
+            cell.temperatureLabel.text = String(format: "%.0f", temp) + "°"
+        }
+        cell.iconLabel.text = weather?.icon
         
         return cell
     }
@@ -77,7 +79,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
             if let weather = viewModel?.bookmarkedLocations.value[indexPath.row] {
-                viewModel?.deleteBookmarkAt(weather: weather)
+                viewModel?.deleteBookmarked(weather: weather)
             }
         }
     }
