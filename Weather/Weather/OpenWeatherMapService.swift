@@ -35,30 +35,31 @@ struct OpenWeatherMapService: ServiceProtocol {
     
     func retrieveWeatherInfo(_ location: CLLocation, completionHandler: @escaping CompletionHandler) {
         guard let url = generateRequestURL(location) else {
-            completionHandler(nil, nil)
+            completionHandler(nil, WeatherError.requestError)
             return
         }
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard error == nil else {
-                if let error = error {
-                    completionHandler(nil, error)
-                } else {
-                    completionHandler(nil, error)
-                }
+                completionHandler(nil, WeatherError.networkError)
                 return
             }
+            
             guard let data = data else {
-                completionHandler(nil, error)
+                completionHandler(nil, WeatherError.dataError)
                 return
             }
             
             do {
                 if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] {
-                    let weather = Weather(json: json)
-                    completionHandler(weather, nil)
+                    if json["id"] != nil {
+                        let weather = Weather(json: json)
+                        completionHandler(weather, nil)
+                    } else {
+                        completionHandler(nil, WeatherError.dataError)
+                    }
                 } else {
-                    completionHandler(nil, error)
+                    completionHandler(nil, WeatherError.JSONParseError)
                 }
             }
         }

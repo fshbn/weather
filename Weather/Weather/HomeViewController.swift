@@ -47,6 +47,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 [unowned self] (Weather) in
                 self.tableView.reloadData()
             }
+            
+            viewModel?.errorMessage.observe {
+                [unowned self] in
+                let alert = UIAlertController(title: "Mayday Situation", message: $0, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.destructive, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
         }
     }
     

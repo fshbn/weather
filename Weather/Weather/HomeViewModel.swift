@@ -18,6 +18,7 @@ class HomeViewModel {
     let iconText: Observable<String>
     let temperature: Observable<String>
     let bookmarkedLocations: Observable<[Weather]>
+    let errorMessage: Observable<String?>
     
     var userLastLocation: CLLocation
     var managedObjectContext: NSManagedObjectContext
@@ -33,6 +34,8 @@ class HomeViewModel {
         iconText = Observable(emptyString)
         temperature = Observable(emptyString)
         bookmarkedLocations = Observable([])
+        errorMessage = Observable(nil)
+        
         userLastLocation = CLLocation(latitude: 0, longitude: 0)
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -53,8 +56,8 @@ class HomeViewModel {
         self.bookmarks = [Weather]()
         
         let bookmarkModels = fetchBookmarksWith(predicate: nil)
-        for bookmark in bookmarkModels {
-            let location = CLLocation(latitude: bookmark.lat, longitude: bookmark.lon)
+        for bookmarkModel in bookmarkModels {
+            let location = CLLocation(latitude: bookmarkModel.lat, longitude: bookmarkModel.lon)
             
             weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
                 if let unwrappedError = error {
@@ -66,9 +69,9 @@ class HomeViewModel {
                     return
                 }
                 
-                if bookmark.name == nil && bookmark.cityId == 0 {
-                    bookmark.name = unwrappedWeather.cityName
-                    bookmark.cityId = unwrappedWeather.cityId
+                if bookmarkModel.name == nil && bookmarkModel.cityId == 0 {
+                    bookmarkModel.name = unwrappedWeather.cityName
+                    bookmarkModel.cityId = unwrappedWeather.cityId
                     
                     do {
                         try self.managedObjectContext.save()
@@ -111,7 +114,9 @@ class HomeViewModel {
         self.temperature.value = String(format: "%.0f", weather.temperature) + "°"
     }
     
-    fileprivate func updateWeather(_ error: Error) {
+    fileprivate func updateWeather(_ error: WeatherError) {
+        self.errorMessage.value = error.rawValue
+        
         self.locationName.value = emptyString
         self.iconText.value = emptyString
         self.temperature.value = emptyString
@@ -122,7 +127,9 @@ class HomeViewModel {
         self.bookmarkedLocations.value = weathers
     }
     
-    fileprivate func updateBookmarks(_ error: Error) {
+    fileprivate func updateBookmarks(_ error: WeatherError) {
+        self.errorMessage.value = error.rawValue
+        
         self.bookmarkedLocations.value = []
     }
     
