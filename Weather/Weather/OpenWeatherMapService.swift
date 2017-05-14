@@ -33,56 +33,8 @@ struct OpenWeatherMapService: ServiceProtocol {
         return components.url
     }
     
-    fileprivate func generateRequestURL(_ cities: [String]) -> URL? {
-        guard var components = URLComponents(string:baseURL) else {
-            return nil
-        }
-
-        components.path = "/data/2.5/group"
-        
-        let cityString = cities.joined(separator: ",")
-        
-        components.queryItems = [URLQueryItem(name:"id", value: cityString),
-                                 URLQueryItem(name:"appid", value:apiKey),
-                                 URLQueryItem(name:"units", value:unit)]
-        
-        return components.url
-    }
-    
     func retrieveWeatherInfo(_ location: CLLocation, completionHandler: @escaping CompletionHandler) {
         guard let url = generateRequestURL(location) else {
-            completionHandler(nil, nil)
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard error == nil else {
-                if let error = error {
-                    completionHandler(nil, error)
-                } else {
-                    completionHandler(nil, error)
-                }
-                return
-            }
-            guard let data = data else {
-                completionHandler(nil, error)
-                return
-            }
-            
-            do {
-                let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any]
-                let weather = try self.parseWeatherJson(json: json!)
-                completionHandler(weather, nil)
-            } catch {
-                completionHandler(nil, error)
-            }
-        }
-        
-        task.resume()
-    }
-    
-    func retrieveWeatherInfo(_ cities: [String], completionHandler: @escaping CompletionHandler) {
-        guard let url = generateRequestURL(cities) else {
             completionHandler(nil, nil)
             return
         }
@@ -160,17 +112,9 @@ struct OpenWeatherMapService: ServiceProtocol {
         guard let windSpeed = windJSON["speed"] else {
             throw SerializationError.missing("speed")
         }
-
-        guard let cloudsJSON = json["clouds"] as? [String: Int] else {
-            throw SerializationError.missing("clouds")
-        }
-        
-        guard let cloudCoverage = cloudsJSON["all"] else {
-            throw SerializationError.missing("cloud all")
-        }
         
         // Initialize properties
-        return Weather(cityId: cityId, location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed), cloudCoverage: String(describing:cloudCoverage))
+        return Weather(cityId: cityId, location: location, iconText: weatherIcon.iconText, temperature: String(describing: temp), humidity: String(describing:humidity), windSpeed: String(describing:windSpeed))
     }
     
 }

@@ -15,15 +15,13 @@ struct Weather {
     let temperature: String
     let humidity: String
     let windSpeed: String
-    let cloudCoverage: String
     
-    init(cityId: Int16, location: String, iconText: String, temperature: String, humidity: String, windSpeed: String, cloudCoverage: String ) {
+    init(cityId: Int16, location: String, iconText: String, temperature: String, humidity: String, windSpeed: String) {
         self.cityId = cityId
         self.location = location
         self.iconText = iconText
         self.temperature  = temperature
         self.humidity = humidity
         self.windSpeed = windSpeed
-        self.cloudCoverage = cloudCoverage
     }
 }
