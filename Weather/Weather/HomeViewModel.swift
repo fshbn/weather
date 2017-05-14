@@ -145,6 +145,7 @@ class HomeViewModel {
 extension HomeViewModel: LocationServiceDelegate {
     func locationDidUpdate(_ service: LocationService, location: CLLocation) {
         userLastLocation = location
+        service.stopLocationUpdates()
         weatherService.retrieveWeatherInfo(location) { weather, error -> Void in
             DispatchQueue.main.async(execute: {
                 if let unwrappedError = error {
