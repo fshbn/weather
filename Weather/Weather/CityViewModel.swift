@@ -15,8 +15,8 @@ class CityViewModel {
     let iconText: Observable<String>
     let temperature: Observable<String>
     let humidity: Observable<String>
+    let rain3h: Observable<String>
     let windSpeed: Observable<String>
-    let cloudCoverage: Observable<String>
     
     // MARK: - Services
     fileprivate var weatherService: ServiceProtocol
@@ -26,10 +26,10 @@ class CityViewModel {
         locationName = Observable(weather.location)
         iconText = Observable(weather.iconText)
         temperature = Observable(weather.temperature)
+        rain3h = Observable(weather.rain3h)
         humidity = Observable(weather.humidity)
         windSpeed = Observable(weather.windSpeed)
-        cloudCoverage = Observable(weather.cloudCoverage)
-
+        
         weatherService = OpenWeatherMapService()
     }
     
@@ -38,9 +38,9 @@ class CityViewModel {
         locationName.value = weather.location
         iconText.value = weather.iconText
         temperature.value = weather.temperature
+        rain3h.value = weather.rain3h
         humidity.value = weather.humidity
         windSpeed.value = weather.windSpeed
-        cloudCoverage.value = weather.cloudCoverage
     }
     
     fileprivate func updateWeather(_ error: Error) {
@@ -49,7 +49,6 @@ class CityViewModel {
         temperature.value = emptyString
         humidity.value = emptyString
         windSpeed.value = emptyString
-        cloudCoverage.value = emptyString
     }
     
     fileprivate func fetch5DayForecast() {

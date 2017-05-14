@@ -9,19 +9,21 @@
 import Foundation
 
 struct Weather {
-    let cityId: Int16
-    let location: String
-    let iconText: String
-    let temperature: String
-    let humidity: String
-    let windSpeed: String
+    var cityId: Int16
+    var location: String
+    var iconText: String
+    var temperature: String
+    var rain3h: String
+    var humidity: String
+    var windSpeed: String
     
-    init(cityId: Int16, location: String, iconText: String, temperature: String, humidity: String, windSpeed: String) {
-        self.cityId = cityId
-        self.location = location
-        self.iconText = iconText
-        self.temperature  = temperature
-        self.humidity = humidity
-        self.windSpeed = windSpeed
+    init() {
+        self.cityId = 0
+        self.location = ""
+        self.iconText = ""
+        self.temperature  = ""
+        self.rain3h = ""
+        self.humidity = ""
+        self.windSpeed = ""
     }
 }
