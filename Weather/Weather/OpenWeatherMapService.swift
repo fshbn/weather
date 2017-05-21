@@ -13,7 +13,7 @@ fileprivate let baseURL = "http://api.openweathermap.org"
 fileprivate let apiKey = "c6e381d8c7ff98f0fee43775817cf6ad"
 fileprivate let unit = "metric"
 
-struct OpenWeatherMapService: ServiceProtocol {
+struct OpenWeatherMapService: WeatherServiceProtocol {
     fileprivate func generateRequestURL(_ location: CLLocation, requestType: String) -> URL? {
         guard var components = URLComponents(string:baseURL) else {
             return nil

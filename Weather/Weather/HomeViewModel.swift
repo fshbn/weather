@@ -9,7 +9,6 @@
 import Foundation
 import CoreLocation
 import CoreData
-import UIKit
 
 class HomeViewModel {
     
@@ -21,12 +20,12 @@ class HomeViewModel {
     let errorMessage: Observable<String?>
     
     var userLastLocation: CLLocation
-    var managedObjectContext: NSManagedObjectContext
     var bookmarks: [Weather]
     
     // MARK: - Services
     fileprivate var locationService: LocationService
-    fileprivate var weatherService: ServiceProtocol
+    fileprivate var weatherService: WeatherServiceProtocol
+    fileprivate var localDataService: LocalDataProtocol
     
     // MARK: - init
     init() {
@@ -37,13 +36,11 @@ class HomeViewModel {
         errorMessage = Observable(nil)
         
         userLastLocation = CLLocation(latitude: 0, longitude: 0)
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        managedObjectContext = appDelegate.managedObjectContext
         bookmarks = [Weather]()
         
         locationService = LocationService()
         weatherService = OpenWeatherMapService()
+        localDataService = LocalDataService()
     }
     
     // MARK: - public
@@ -55,60 +52,59 @@ class HomeViewModel {
     func updateBookmarks() {
         self.bookmarks = [Weather]()
         
-        let bookmarkModels = fetchBookmarksWith(predicate: nil)
-        for bookmarkModel in bookmarkModels {
-            let location = CLLocation(latitude: bookmarkModel.lat, longitude: bookmarkModel.lon)
-            
-            weatherService.getWeatherInfo(location) { weather, error -> Void in
-                if let unwrappedError = error {
-                    self.updateBookmarks(unwrappedError)
-                    return
-                }
-                
-                guard var unwrappedWeather = weather else {
-                    return
-                }
-                
-                if bookmarkModel.name == nil && bookmarkModel.cityId == 0 {
-                    bookmarkModel.name = unwrappedWeather.cityName
-                    bookmarkModel.cityId = unwrappedWeather.cityId
+        localDataService.getBookmarkedCities(predicate: nil) { bookmarkModels, error -> Void in
+            if let bookmarks = bookmarkModels as? [BookmarkModel] {
+                for bookmarkModel in bookmarks {
+                    let location = CLLocation(latitude: bookmarkModel.lat, longitude: bookmarkModel.lon)
                     
-                    do {
-                        try self.managedObjectContext.save()
-                    } catch {
-                        fatalError("Failure to save context: \(error)")
+                    self.weatherService.getWeatherInfo(location) { weather, error -> Void in
+                        if let unwrappedError = error {
+                            self.updateBookmarks(unwrappedError)
+                            return
+                        }
+                        
+                        guard var unwrappedWeather = weather else {
+                            return
+                        }
+                        
+                        if bookmarkModel.name == nil && bookmarkModel.cityId == 0 {
+                            bookmarkModel.name = unwrappedWeather.cityName
+                            bookmarkModel.cityId = unwrappedWeather.cityId
+                            
+                            self.localDataService.saveBookmarkedCity(bookmark: bookmarkModel, completionHandler: {bookmarkModels, error -> Void in })
+                        }
+                        
+                        //to get forecast from city view
+                        unwrappedWeather.lat = bookmarkModel.lat
+                        unwrappedWeather.lon = bookmarkModel.lon
+                        
+                        self.bookmarks.append(unwrappedWeather)
+                        DispatchQueue.main.async(execute: {
+                            self.updateBookmarks(self.bookmarks)
+                        })
                     }
                 }
-                
-                //to get forecast from city view
-                unwrappedWeather.lat = bookmarkModel.lat
-                unwrappedWeather.lon = bookmarkModel.lon
-                
-                self.bookmarks.append(unwrappedWeather)
-                DispatchQueue.main.async(execute: {
-                    self.updateBookmarks(self.bookmarks)
-                })
             }
         }
     }
     
     func deleteBookmarked(weather: Weather) {
-        let bookmarkModels = fetchBookmarksWith(predicate: NSPredicate(format: "cityId == %i", weather.cityId))
-        
-        for bookmark in bookmarkModels {
-            managedObjectContext.delete(bookmark)
-        }
-        
-        do {
-            try self.managedObjectContext.save()
-        } catch {
-            fatalError("Failure to save context: \(error)")
-        }
-
-        self.bookmarks = self.bookmarks.filter{$0.cityId != weather.cityId}
-        DispatchQueue.main.async(execute: {
-            self.updateBookmarks(self.bookmarks)
-        })
+//        let bookmarkModels = fetchBookmarksWith(predicate: NSPredicate(format: "cityId == %i", weather.cityId))
+//        
+//        for bookmark in bookmarkModels {
+//            managedObjectContext.delete(bookmark)
+//        }
+//        
+//        do {
+//            try self.managedObjectContext.save()
+//        } catch {
+//            fatalError("Failure to save context: \(error)")
+//        }
+//
+//        self.bookmarks = self.bookmarks.filter{$0.cityId != weather.cityId}
+//        DispatchQueue.main.async(execute: {
+//            self.updateBookmarks(self.bookmarks)
+//        })
     }
     
     // MARK: - private
@@ -135,20 +131,6 @@ class HomeViewModel {
         self.errorMessage.value = error.rawValue
         
         self.bookmarkedLocations.value = []
-    }
-    
-    fileprivate func fetchBookmarksWith(predicate: NSPredicate?) -> [BookmarkModel] {
-        let bookmarkFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Bookmark")
-        if let predicate = predicate {
-            bookmarkFetch.predicate = predicate
-        }
-        
-        do {
-            let fetchedBookmarks = try self.managedObjectContext.fetch(bookmarkFetch) as! [BookmarkModel]
-            return fetchedBookmarks
-        } catch {
-            fatalError("Failed to fetch bookmarks: \(error)")
-        }
     }
 }
 

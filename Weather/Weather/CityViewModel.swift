@@ -24,7 +24,7 @@ class CityViewModel {
     var lon: Double = 0
     
     // MARK: - Services
-    fileprivate var weatherService: ServiceProtocol
+    fileprivate var weatherService: WeatherServiceProtocol
     
     // MARK: - init
     init(weather: Weather) {

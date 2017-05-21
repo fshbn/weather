@@ -12,7 +12,7 @@ import CoreLocation
 typealias CompletionHandler = (Weather?, WeatherError?) -> Void
 typealias ForecastsCompletionHandler = ([Forecast]?, WeatherError?) -> Void
 
-protocol ServiceProtocol {
+protocol WeatherServiceProtocol {
     func getWeatherInfo(_ location: CLLocation, completionHandler: @escaping CompletionHandler)
     func get5DayWeatherForecast(_ location: CLLocation, completionHandler: @escaping ForecastsCompletionHandler)
 }
