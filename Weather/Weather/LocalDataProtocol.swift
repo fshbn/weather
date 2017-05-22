@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import CoreLocation
 
 typealias BookmarksCompletionHandler = ([AnyObject]?, WeatherError?) -> Void
 
 protocol LocalDataProtocol {
-    func getBookmarkedCities(predicate: NSPredicate?, completionHandler: @escaping BookmarksCompletionHandler)
-    func saveBookmarkedCity(bookmark: BookmarkModel?, completionHandler: @escaping BookmarksCompletionHandler)
-    func deleteBookmarkedCity(bookmark: BookmarkModel?, completionHandler: @escaping BookmarksCompletionHandler)
+    func getBookmarks(predicate: NSPredicate?, completionHandler: @escaping BookmarksCompletionHandler)
+    func saveBookmark(coordinate: CLLocationCoordinate2D, completionHandler: @escaping BookmarksCompletionHandler)
+    func update(bookmark: BookmarkModel, completionHandler: @escaping BookmarksCompletionHandler)
+    func delete(bookmark: BookmarkModel, completionHandler: @escaping BookmarksCompletionHandler)
 }

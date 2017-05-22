@@ -40,7 +40,7 @@ class HomeViewModel {
         
         locationService = LocationService()
         weatherService = OpenWeatherMapService()
-        localDataService = LocalDataService()
+        localDataService = CoreDataService.sharedInstance
     }
     
     // MARK: - public
@@ -52,7 +52,7 @@ class HomeViewModel {
     func updateBookmarks() {
         self.bookmarks = [Weather]()
         
-        localDataService.getBookmarkedCities(predicate: nil) { bookmarkModels, error -> Void in
+        localDataService.getBookmarks(predicate: nil) { bookmarkModels, error -> Void in
             if let bookmarks = bookmarkModels as? [BookmarkModel] {
                 for bookmarkModel in bookmarks {
                     let location = CLLocation(latitude: bookmarkModel.lat, longitude: bookmarkModel.lon)
@@ -71,7 +71,7 @@ class HomeViewModel {
                             bookmarkModel.name = unwrappedWeather.cityName
                             bookmarkModel.cityId = unwrappedWeather.cityId
                             
-                            self.localDataService.saveBookmarkedCity(bookmark: bookmarkModel, completionHandler: {bookmarkModels, error -> Void in })
+                            self.localDataService.update(bookmark: bookmarkModel, completionHandler: {bookmarkModels, error -> Void in })
                         }
                         
                         //to get forecast from city view
@@ -89,22 +89,18 @@ class HomeViewModel {
     }
     
     func deleteBookmarked(weather: Weather) {
-//        let bookmarkModels = fetchBookmarksWith(predicate: NSPredicate(format: "cityId == %i", weather.cityId))
-//        
-//        for bookmark in bookmarkModels {
-//            managedObjectContext.delete(bookmark)
-//        }
-//        
-//        do {
-//            try self.managedObjectContext.save()
-//        } catch {
-//            fatalError("Failure to save context: \(error)")
-//        }
-//
-//        self.bookmarks = self.bookmarks.filter{$0.cityId != weather.cityId}
-//        DispatchQueue.main.async(execute: {
-//            self.updateBookmarks(self.bookmarks)
-//        })
+        localDataService.getBookmarks(predicate: NSPredicate(format: "cityId == %i", weather.cityId)) { bookmarkModels, error -> Void in
+            if let bookmarks = bookmarkModels as? [BookmarkModel] {
+                for bookmarkModel in bookmarks {
+                    self.localDataService.delete(bookmark: bookmarkModel, completionHandler: { (result, error) in
+                        DispatchQueue.main.async(execute: {
+                            self.bookmarks = self.bookmarks.filter{$0.cityId != weather.cityId}
+                            self.updateBookmarks(self.bookmarks)
+                                })
+                    })
+                }
+            }
+        }
     }
     
     // MARK: - private
